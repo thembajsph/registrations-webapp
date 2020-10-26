@@ -10,7 +10,7 @@ const pool = new Pool({
     connectionString
 });
 
-let instance = registrations(pool); registrations
+let instance = registrations(pool); 
 
 
 describe("The registrations webapp", async function () {
