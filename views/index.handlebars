@@ -1,0 +1,66 @@
+<div class="container">
+
+
+    <div class="row center">
+        <h1>registration numbers</h1>
+    </div>
+    <div class="row col-3 center">
+
+        <label for="">registration number:</label>
+
+        <form action="/registrations" method="POST">
+
+            <input type="text" id="textfield2" name="regNumbers"    placeholder="enter your registration..."
+                class="enterReg">
+
+            {{!-- </div> --}}
+
+            {{!-- <div class="frame row col-3 center"> --}}
+            <ul class="" id="listItem">
+
+                {{#each reg}}
+
+                <li>{{this.reg_numbers}}</li>
+
+                {{/each}}
+
+            </ul>
+    </div>
+
+
+
+
+    <span>
+
+        <div class="addRegBtn row col-3 center ">
+
+            <button class="addBtn" type="submit" name="button">Add reg</button>
+            {{!-- <button class="dropDownBtn" type="submit" name="button">apply filter</button> --}}
+        </div>
+
+        </form>
+
+        <div class=" row center ">
+            <form action="/filteredTowns" method="GET">
+                <select class="dropBox" name="options" value="">
+
+                    <option value="default"> Select Town </option>
+                    <option value="1" name="Cape Town"> Cape Town </option>
+                    <option value="2" name="Paarl"> Paarl </option>
+                    <option value="3" name="Bellville"> Bellville </option>
+                    <option value='all' name="All">Show All</option>
+                </select>
+                <input type="submit"></input>
+            </form>
+        </div>
+
+
+
+    </span>
+
+    <div class="error center" id="errorMsg"></div>
+    {{errorMsg.info}}
+</div>
+
+{{!-- pattern="/^[A-Z0-9].{1,9}$/g" --}}
+{{!-- "{{registrations.broughtBackData}} --}}

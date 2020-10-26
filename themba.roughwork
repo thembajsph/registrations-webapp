@@ -1,0 +1,576 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Registrations</title>
+	<h1>The Registration Display</h1>
+</head>
+<body>
+    <form action="reg_numbers" method="POST">
+	<div class="container">
+		<div class="input&btn">
+			<p class="eg">e.g. CA 12345 <span>|</span> CJ 987-888 <span>|</span> CL 812</p>
+   		 <p class="error"> {{messages.info}}<p>
+		<p class="msg"> {{messages.msg}}<p>
+
+			<input id="regInput" class="regString" name="input" placeholder="enter registration here">
+			<button class="btn" id="displayBtn" type="submit">Add</button>
+		</div>
+		</div>
+		<ul>
+            {{#each reg}}
+
+             <li id="regDisplay" class="color">{{this.reg}}</li>
+
+             {{/each}}
+        </ul>
+        </form>
+		<form action="/reg_numbers" method="GET">
+			<select class="select" name="opt">
+				<option value="default">Select Town</option>
+				<option value='1' name="Cape Town">Cape Town</option>
+				<option value='3' name="Stellenbosch">Stellenbosch</option>
+				<option value='2' name="Paarl">Paarl</option>
+				<option value='all' name="All">Show All</option>
+			</select>
+			<input type="submit">
+			</form>
+	</div>
+
+</body>
+<script>
+        setTimeout(function(){
+            document.querySelector(".error").innerHTML = "";
+			 document.querySelector(".msg").innerHTML = "";
+        }, 4000);
+    </script>
+
+
+</html>
+
+
+
+// factory function
+module.exports = function TheRegistrations(pool) {
+
+    async function adding(regEntered) {
+        if (regEntered !== "") {
+            const code = regEntered.substring(0, 2);
+            // select correct id for reg entered
+            const getId = await pool.query('select id from towns where (code) = ($1)', [code]);
+            const townId = getId.rows[0].id;
+            let exists;
+            if (townId > 0) {
+                // check if reg exists in database
+                exists = await pool.query('select * from reg_number where reg = ($1)', [regEntered])
+            } else {
+                return false
+            }
+            if (exists.rows.length < 1) {
+                // if reg does not exist insert reg and id into database
+                await pool.query('insert into reg_number (reg, towns_id) values ($1, $2)', [regEntered, townId]);
+            } else {
+                return false
+            }
+        } else {
+            return false
+        }
+    }
+    
+    // getting rowCount to use for flash error message
+    async function ifRegExists(reg) {
+        let exists = await pool.query('select * from reg_number where reg = ($1)', [reg])
+        return exists.rowCount;
+    }
+    // filter according to town selected
+    
+    async function optionSelected(id) {
+        
+        if (id === 'all') {
+            let allRegs = await pool.query('select reg from reg_number');
+            return allRegs.rows
+        } else {
+            const theId = await pool.query('select reg from reg_number where towns_id = ($1)', [id])
+            return theId.rows
+        }
+    }
+
+    //function returning all the regs
+    async function allTheRegs() {
+        const allRegs = await pool.query('select reg from reg_number');
+        return allRegs.rows;
+    }
+    return {
+        adding,
+        ifRegExists,
+        optionSelected,
+        allTheRegs
+    }
+}
+
+
+
+module.exports = function RegRoutes(registrations) {
+
+    async function add(req, res, next) {
+        let value = req.body.input
+        try {
+            let upper = value.toUpperCase();
+            if (value !== "") {
+                if (/C[ALJ] \d{3,5}$/.test(upper) || /C[ALJ] \d+\s|-\d+$/.test(upper)) {
+                    if (await registrations.ifRegExists(upper) === 0) {
+                        await registrations.adding(upper)
+                        req.flash('msg', 'success')
+                    } else {
+                        req.flash('info', 'registration number already entered')
+                    }
+                } else {
+                    req.flash('info', 'enter a valid registration number')
+                }
+            } else {
+                req.flash('info', 'enter a registration number')
+            }
+            res.render("index", {
+                reg: await registrations.allTheRegs()
+            });
+
+        } catch (err) {
+            next(err);
+        }
+    };
+    async function showAll(req, res, next) {
+        try {
+            res.render("index", {
+                reg: await registrations.allTheRegs()
+
+            });
+        } catch (err) {
+            next(err);
+        }
+    }
+    async function filter(req, res, next) {
+        try {
+            let town = req.query.opt;
+            let all = await registrations.optionSelected(town)
+
+            res.render("index", {
+                reg: all
+            });
+        } catch (err) {
+            next(err);
+        }
+
+    }
+    return {
+        add,
+        showAll,
+        filter
+    }
+};
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//   async function enterName(name) {
+//     const isAdded = await getCountForUser(name) > 0;
+
+//     // console.log(isAdded);
+
+//     if (isAdded) {
+//       await pool.query('UPDATE greetings SET count = count + 1 WHERE name = $1', [name]);
+
+//       return isAdded;
+//     }
+
+//     await pool.query('INSERT INTO greetings (name, count) values($1,$2)', [name, 1])
+//   };
+
+//   async function existDbAndCount(name) {
+//     try {
+//       const updateQuery = await pool.query('SELECT name FROM greetings WHERE name = $1', [name]);
+//       console.log(updateQuery.rows);
+//       return updateQuery.rows;
+//     } catch (error) {
+//       // console.log(error.name)
+//       // console.log(error.message)
+//       // console.log(error.stack)
+//     }
+
+//   }
+
+//   async function language(lang, name) {
+
+
+//     let check = await existDbAndCount(name);
+//     // console.log(check);
+//     if (name !== "") {
+
+
+//       await overallCounter()
+
+//       if (check.rows === 0) {
+
+//         await enterName(name)
+//       }
+
+
+//       if (lang === "Isixhosa") {
+//         return "Molo, " + name + " !"
+//       }
+//       else if (lang === "English") {
+//         return "Hello, " + name + " !"
+//       }
+//       else if (lang === "Afrikaans") {
+//         return "Hallo, " + name + " !"
+//       }
+//     }
+//   }
+
+//   async function getName() {
+//     let names = await pool.query('SELECT name FROM greetings')
+//     // console.log(names);
+//     return names.rows;
+//   }
+
+//   async function overallCounter() {
+//     let count = await pool.query('SELECT id FROM greetings');
+
+//     return count.rowCount;
+//   }
+
+//   // function hasNumbers(name) {
+
+//   // };
+//   // function clear() {
+//   //   greetedNames = {};
+//   // }
+
+
+//   const getCountForUser = async (name) => {
+
+
+//     let selectQuery = await pool.query('SELECT count FROM greetings WHERE name = $1 ', [name]);
+
+//     if (selectQuery.rows[0] && selectQuery.rows[0].count) {
+//       return selectQuery.rows[0].count;
+//     }
+
+//     //return 0;
+//   }
+
+//   async function resetFtn() {
+
+//     let restart = await pool.query('DELETE FROM greetings ');
+//     // console.log(restart).rows;
+//   };
+
+//   async function newFunctionFirstRoute() {
+
+//     const greetedNames = await pool.query('select id, name,count as greets, time as "timeOfGreets" from greetings')
+
+//     return greetedNames.rows;
+//   }
+
+
+
+
+//   return {
+//     //clear,
+//     //setName,
+//     getName,
+//     language,
+//     overallCounter,
+//     // hasNumbers,
+//     enterName,
+//     existDbAndCount,
+//     getCountForUser,
+//     resetFtn,
+//     newFunctionFirstRoute
+
+//   };
+
+// };
+
+
+
+
+
+function numberReg(reg) {  // <= you can pass a value here that can be accessed by the rest of the functions within your code
+
+    var newArray = reg || []; // or set , check whether reg has data and use that or else set an empty array 
+
+    function storeArray(reg) {
+
+        if (!newArray.includes(reg)) { // stores in and checking for duplucates
+            newArray.push(reg)
+        }
+    }
+
+    //local bring back data local and checks , on the list for 
+    function filtero(location) {
+        var regTownArr = [];
+
+        // loop over reg then check then if it matches the locaL
+        for (let i = 0; i < newArray.length; i++) {
+
+            if (newArray[i].startsWith(location)) {    //filtering only Ca 
+                regTownArr.push(newArray[i])
+            }
+        }
+
+        return regTownArr;
+    };
+
+    function broughBackArray() {
+
+        return newArray   // connected to top one and return the stored
+
+    }
+
+    function clear() {
+        newArray = [];
+    }
+
+
+    // dom code
+    function local() {
+
+        if (lineDataHolder[regTown]) {
+    
+          return errorMessage.innerHTML = ""
+    
+        }
+    
+        else {
+          lineDataHolder[regTown
+          ] = 1;
+    
+        }
+    
+        //local storage store  , what it should stringify 
+        localStorage.setItem("reg", JSON.stringify(lineDataHolder));
+    
+      
+    
+    };
+    
+    function cleaningTowns() {
+    
+      //alert(dropBoxElem.options[dropBoxElem.selectedIndex].value);
+    
+      const currentTown = dropBoxElem.options[dropBoxElem.selectedIndex].value;
+    
+      if (currentTown) {
+    
+        theList.innerHTML = "";
+    
+        var fromFactory = instance.filtero(currentTown) //our towns we want to filter
+    
+        for (var i = 0; i < fromFactory.length; i++) {
+    
+          var li = document.createElement("li")
+          li.innerHTML = fromFactory[i]
+         // li.classList.add("color");
+          theList.appendChild(li);
+        }
+    
+      }
+    
+      else if (currentTown == "") {
+        theList.innerHTML = "";
+    
+        for (var i = 0; i < lineDataHolder.length; i++) {
+    
+          var li = document.createElement("li")
+          li.innerHTML = lineDataHolder[i]
+          li.classList.add("color");
+          theList.appendChild(li);
+        }
+      }
+    };
+    
+    function clearAll() {
+    instance.broughBackArray();
+    
+      var buttonpressed = false;
+    
+      if (!buttonpressed && localStorage) { // Check if the localStorage object exists
+    
+          window.localStorage.clear()  //clears the localstorage
+          instance.clear();
+          location.reload();
+    
+      }
+    }
+    
+
+
+
+
+
+    return {
+        storeArray,
+        filtero,
+        broughBackArray,
+        clear,
+        local,
+        clearAll,
+        cleaningTowns,
+        
+    }
+};
