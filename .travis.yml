@@ -1,0 +1,14 @@
+
+
+env:
+  - DATABASE_URL=postgresql://postgres@localhost:5432/registrations-tests
+
+node_js:  
+  - "12.19.0"
+
+before_script:
+  - psql -c 'create database  registrations-tests;' -U postgres
+  - psql -U postgres -d registrations-tests -a -f tables.sql
+
+services:
+  - postgresql

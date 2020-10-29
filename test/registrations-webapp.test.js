@@ -1,8 +1,8 @@
 const assert = require("assert");
-const greetings = require("../");
+//const registrations = require("../registrations");
 
 const pg = require("pg");
-const { reset } = require("nodemon");
+// const { reset } = require("nodemon");
 const registrations = require("../registrations");
 const Pool = pg.Pool;
 const connectionString = process.env.DATABASE_URL || 'postgresql://thembajoseph:themba17307@localhost:5432/registrations-tests';
@@ -10,16 +10,18 @@ const pool = new Pool({
     connectionString
 });
 
-let instance = registrations(pool); 
+let instance = registrations(pool);
 
 
 describe("The registrations webapp", async function () {
 
 
     beforeEach(async function () {
-        await pool.query("delete from town_names");
-        await pool.query("delete from foreign_keys")
+
+
+        await pool.query("DELETE FROM foreign_keys")
     });
+
 
     it("should be able to add a new registration number", async function () {
 
@@ -31,48 +33,124 @@ describe("The registrations webapp", async function () {
 
     });
 
-    it("should be able check if it exist in database number of the registration", async function () {
 
-        await instance.storeData("CA 123 556");
-        await instance.storeData("CY 456 325");
-        await instance.storeData("CJ 147 816");
-
-        assert.deepInclude(["CA 123 556", "CY 456 325", "CJ 147 816"], "CA 123 556");
-        assert.deepInclude(["CA 123 556", "CY 456 325", "CJ 147 816"], "CJ 147 816");
-        assert.deepInclude(["CA 123 556", "CY 456 325", "CJ 147 816"], "CY 456 325");
-    });
+    it("should return (all) registration numbers in the database", async function () {
 
 
-    it("should be able take in a filter based on town and return town's registration number", async function () {
+        await instance.storeData("CA 222 364")
 
-        var capeTown = await instance.storeData("CA 123 456")
-        var bellville = await instance.storeData("CY 456 789")
-        var paarl = await instance.storeData("CJ 147 756")
 
-        assert.deepEqual(capeTown, instance.filteredTownsOptions("CA"));
-        assert.deepEqual(bellville, instance.filteredTownsOptions("CY"));
-        assert.deepEqual(paarl, instance.filteredTownsOptions("CJ"));
+        assert.deepEqual([{ reg_numbers: 'CA 222 364' }], await instance.filteredTownsOptions("1"));
 
     });
 
+
+    it("should not add duplicate registration numbers into the database", async function () {
+
+
+        await instance.storeData("CA 222-365")
+        await instance.storeData("CA 222-365")
+
+        assert.deepEqual([{ reg_numbers: 'CA 222-365' }], await instance.allReg());
+
+    });
+
+
+    it("should return all registrations starting with CY", async function () {
+
+
+        await instance.storeData("CY 555 123");
+        await instance.storeData("CY 523 456");
+        await instance.storeData("CJ 888 678");
+
+        assert.deepEqual([{ reg_numbers: "CY 555 123" }, { reg_numbers: "CY 523 456" }], await instance.filteredTownsOptions("2"))
+    });
+
+
+
+
+    it("should be able to use flash and return a message if the input is not valid", async function () {
+
+        assert.equal("Insert a registration number, please!", await instance.errorCheck(''));
+
+    });
+
+    it("should be able to use flash and return a message if the input is valid", async function () {
+
+       // await instance.storeData("CY 456 789");
+
+        assert.equal("registration successfully added", await instance.errorCheck('CY 456 789'));
+
+    });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    // it("should be able take in a different language and return message", function () {
+    //     let instance = greet();
+    //     var message = instance.language("Isixhosa", "Themba");
+    //     var message2 = instance.language("English", "Themba");
+    //     var message3 = instance.language("Afrikaans", "Sipho");
+
+
+    //     assert.equal(message, "Molo, Themba" + " !");
+    //     assert.equal(message2, "Hello, Themba" + " !");
+    //     assert.equal(message3, "Hallo, Sipho" + " !");
+
+
+    // });
+
+
+
+
+
+
+
+
+
+
+
+})
+
+after(function () {
+    pool.end();
+
+
 });
-
-
-it("should be able to use flash and return a message if the input is not valid", async function () {
-
-    assert.equal(assert.deepEqual(["Insert a registration number, please!"], instance.errorCheck()));
-
-});
-
-it("should be able to use flash and return a message if the input is valid", async function () {
-
-    instance.storeData("CY 456 789");
-
-    assert.equal(assert.deepEqual(["registration successfully added"], instance.errorCheck()));
-
-});
-
-
 
 
 

@@ -1,6 +1,7 @@
 .container{
-    width: 320px;
-    height: 570px;
+    
+    width: auto;
+    height: auto;
     background: #fff;
     color: #000;
     top: 50%;
@@ -11,41 +12,83 @@
     border: 5px solid black;
     padding: 50px;
     max-width: fit-content;
-    /* display: inline-block;
-    display: inline-grid */
-}
+    
+} 
 
 body {
     background-color: coral;
-    /* display: inline-grid */
+    
+    max-width: fit-content;
 }
- ul {
+ul {
+    
     margin: 0em;
     padding: 0em;
-    /* display: inline-grid */
+    list-style: none;
+   /* display: inline-block; */
+   /* display: inline-block; */
+
+    
 }
 
 li {
-     
-    list-style: none;
-    padding: 1em;
-    background-color: lightseagreen;
-       
-    border-radius: 0.1em solid;
-    margin: 0.2em;
     
-    border-radius: 06px;
-    /* display: inline;  */
-
-    float: center;
-    width: 7.5em; 
+    display: inline-block;
+    padding: 0.8em;
+    background-color: yellow;  
+    border-radius: 0.5em;
+    margin: 0.2em;
+    /* border-radius: 06px; */
+    
+    /* width: 7.5em;  */
     
 };
 
-/* li {
+
   
-} */
+
 
 .red {
     color:red;
+}
+
+.addBtn{
+
+background-color: green;
+
+}
+
+
+.clearBtn {
+
+    background-color: red
+
+}
+ .enterReg {
+float: left;
+
+ }
+
+
+h1{
+ font-family: "Arial Black", sans-serif;
+    font-size: 4.5em;
+    letter-spacing: -1px;
+    background-color: black;
+    color: white; 
+}
+
+label {
+    display: inline;
+    color: cadetblue;
+}
+.infom{
+    /* display: inline; */
+    
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    width: 50%; 
+    color: red; 
+
 }

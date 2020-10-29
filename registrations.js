@@ -8,22 +8,26 @@ module.exports = function registrations(pool) {
 
             let string = reg.substring(0, 2);
 
-           // console.log(string)
+            //   console.log({ string })
 
 
-            const selectQuery = await pool.query('SELECT id FROM town_names WHERE town_code  = ($1) ', [string])
+            const selectQuery = await pool.query('SELECT id FROM town_names WHERE town_code  = $1', [string])
             // now we must select the right id for our registrations
 
-            const codeId = selectQuery.rows[0].id
-            console.log(codeId)
+            // console.log({ selectQuery });
+
+            let codeId = selectQuery.rows[0].id
+
+            // console.log(codeId)
             //to check if its a database
 
             let ifExists;
 
             // console.log(ifExists
             if (codeId > 0) {
+                //console.log(codeId);
 
-                ifExists = await pool.query('SELECT  * from foreign_keys where reg_numbers = ($1)', [reg])
+                ifExists = await pool.query('SELECT * from foreign_keys where reg_numbers = ($1)', [reg])
             }
 
             else {
@@ -32,7 +36,7 @@ module.exports = function registrations(pool) {
 
             }
             //now if if doesnt i the database , you want to insert registrations and the id
-         //   let InsertQuery;
+            //   let InsertQuery;
 
             if (ifExists.rows.length < 1) {
 
@@ -64,14 +68,14 @@ module.exports = function registrations(pool) {
         if (id === "all") {
 
             let allRegistrations = await pool.query("SELECT reg_numbers FROM foreign_keys");
-//console.log(allRegistrations.rows)
-//return
+            //console.log(allRegistrations.rows)
+            //return
             return allRegistrations.rows
         }
         else {
 
             const regId = await pool.query("SELECT reg_numbers FROM foreign_keys WHERE  town_id = ($1)", [id])
-//console.log(regId.rows)
+            //console.log(regId.rows)
             return regId.rows
         }
     };
@@ -83,7 +87,7 @@ module.exports = function registrations(pool) {
 
         let allNumbers = await pool.query('SELECT reg_numbers FROM foreign_keys');
 
-        console.log(allNumbers.rows);
+        //console.log(allNumbers.rows);
 
         return allNumbers.rows
     };
@@ -93,19 +97,28 @@ module.exports = function registrations(pool) {
 
         //  var userName = await req.body.userName;
 
-        if (regNumber === "") {
+        if (regNumber == "") {
 
             return "Insert a registration number, please!"
 
         }
-        else if (regNumber) {
+        else {
 
             return "registration successfully added"
         }
 
     };
 
+    async function resetFtn() {
+
+        let restart = await pool.query('DELETE FROM foreign_keys');
+        //console.log(restart).rows;
+        return restart;
+    };
+
+
     return {
+        resetFtn,
         storeData,
         existInDatabase,
         filteredTownsOptions,

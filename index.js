@@ -1,7 +1,7 @@
 const flash = require('express-flash');
 const session = require('express-session');
-//const routes = require('./routes');
-const registrations = require('./registrations')
+const routes = require('./routes');
+const registration = require('./registrations')
 const express = require("express");
 const app = express();
 
@@ -28,8 +28,12 @@ app.use(session({
 // initialise the flash middleware
 app.use(flash());
 
-//const greetings = greet(pool);
-//const routesFact = routes(greetings)
+const registrations = registration(pool);
+const routesFactory = routes(registrations)
+
+
+// const greetings = greet(pool);
+// const routesFact = routes(greetings)
 
 const exphbs = require('express-handlebars');
 
@@ -51,113 +55,31 @@ app.use(bodyParser.urlencoded({ extended: false }));
 // // parse application/json
 app.use(bodyParser.json());
 
-const instance = registrations(pool);
-
-
-app.get("/", async function (req, res) {
-
-    // instance.storeArray();
-  // }
-
-  // else {
-
-  //   flashMsg;
-
-  // };
-
-  res.render("index", {
-
-    reg: await instance.allReg()
 
 
 
-  });
+app.get("/", routesFactory.root);
 
-});
+app.post("/registrations", routesFactory.postRegistrations);
 
+app.get("/registrations", routesFactory.getRegistrations);
 
-app.post("/registrations", async function (req, res) {
+app.get("/filteredTowns", routesFactory.filteredTowns);
 
-  try {
+app.get("/clearDb", routesFactory.clearDatabase);
 
-   //flash warning message
-   let flashMsg = await req.flash('info', instance.errorCheck());
-
-   // var regex = /C[AYJ] \d{3,5}$/.test(regTown) || /C[AYJ] \d+\s|-\d+$/.test(regTown) && /^[A-Z0-9].{1,9}$/.test(regTown);
-   
-   // if (regTown !== "" && regex) {
-
-
-
-    let regTown = req.body.regNumbers
-    console.log(regTown);
-  
-    regTown = regTown.toUpperCase();
-
-    instance.storeData(regTown);
-  
-    res.render("index", {
-
-      reg: await instance.allReg(), 
-      
-      flashMsg
-
-    })
-
-  } catch (error) {
-
-    console.log(error.name);
-    console.log(error.message);
-    console.log(error.stack);
-
-  }
-
-});
-
-app.get("/registrations", async function (req, res) {
-
-  try {
-
-    res.render("index", {
-
-      reg: await instance.allReg()
-
-    });
-
-  } catch (error) {
-    console.log(error.name);
-    console.log(error.message);
-    console.log(error.stack)
-  };
-
-});
-
-app.get("/filteredTowns", async function (req, res) {
-  try {
-   
-    let town = req.query.options;
-
-    //instance.storeData(town);
-
-    let all = await instance.filteredTownsOptions(town)
-//console.log(all)
-
-    res.render("index", {
-      reg: all
-    });
-
-  } catch (error) {
-    console.log(error.name);
-    console.log(error.message);
-    console.log(error.stack)
-
-  }
-
-});
-
-const PORT = process.env.PORT || 3057
+const PORT = process.env.PORT || 3050
 
 app.listen(PORT, function () {
   console.log("app started at port:", PORT);
 
 });
+
+
+// && /^[A-Z0-9].{1,9}$/.test(regTown)
+// console.log(regex)
+ //instance.storeData(town);
+  // }
+    //  else {
+    //   flashMsg
+    // if (/C[ALJ] \d{3,5}$/.test() || /C[ALJ] \d+\s|-\d+$/.test())
