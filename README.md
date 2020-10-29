@@ -1,0 +1,1 @@
+[![Build Status](https://travis-ci.org/thembajsph/registrations-webapp.svg?branch=master)](https://travis-ci.org/thembajsph/registrations-webapp)

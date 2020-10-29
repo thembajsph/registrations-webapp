@@ -16,9 +16,11 @@
     "pg": "^8.4.1",
     "static": "^2.0.0"
   },
-  "devDependencies": {},
+  "devDependencies": {
+    "mocha": "^8.2.0"
+  },
   "scripts": {
-     "test": "mocha",
+    "test": "mocha",
     "start": "node index.js"
   },
   "keywords": [],
