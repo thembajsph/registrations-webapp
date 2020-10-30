@@ -11,6 +11,14 @@
  );
 
 
+ Insert into town_names (town_name,town_code)
+ values ('Cape_town', 'CA');
+
+ Insert into town_names (town_name,town_code)
+ values ('Paarl', 'CJ');
+
+ Insert into town_names (town_name,town_code)
+ values ('Bellville', 'CY');
 
 
 
