@@ -22,8 +22,14 @@
 
 
 
+ Insert into foreign_keys (town_id,reg_numbers)
+ values ('1', 'CA 222-364');
 
+ Insert into foreign_keys (town_id,reg_numbers)
+ values ('3', 'CY 222-378');
 
+ Insert into foreign_keys (town_id,reg_numbers)
+ values ('2', 'CJ 222-875');
 
 
 
