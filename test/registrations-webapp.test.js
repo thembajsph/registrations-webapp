@@ -5,7 +5,7 @@ const pg = require("pg");
 // const { reset } = require("nodemon");
 const registrations = require("../registrations");
 const Pool = pg.Pool;
-const connectionString = process.env.DATABASE_URL || 'postgresql://thembajoseph:themba17307@localhost:5432/registrations-tests';
+const connectionString = process.env.DATABASE_URL || 'postgresql://thembajoseph:themba17307@localhost:5432/registrations_tests';
 const pool = new Pool({
     connectionString
 });
@@ -89,8 +89,9 @@ describe("The registrations webapp", async function () {
 
 
 
+    DROP DATABASE [IF EXISTS] registrations-tests
 
-
+    psql -d registrations-tests;
 
 
 
