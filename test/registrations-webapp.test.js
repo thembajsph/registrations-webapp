@@ -63,7 +63,7 @@ describe("The registrations webapp", async function () {
         await instance.storeData("CY 523 456");
         await instance.storeData("CJ 888 678");
 
-        assert.deepEqual([{ reg_numbers: "CY 555 123" }, { reg_numbers: "CY 523 456" }], await instance.filteredTownsOptions("2"))
+        assert.deepEqual([{ reg_numbers: "CY 555 123" }, { reg_numbers: "CY 523 456" }], await instance.filteredTownsOptions("3"))
     });
 
 
@@ -89,9 +89,9 @@ describe("The registrations webapp", async function () {
 
 
 
-    DROP DATABASE [IF EXISTS] registrations-tests
+    // DROP DATABASE [IF EXISTS] registrations-tests
 
-    psql -d registrations-tests;
+    // psql -d registrations-tests;
 
 
 
