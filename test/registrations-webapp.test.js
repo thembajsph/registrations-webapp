@@ -18,7 +18,6 @@ describe("The registrations webapp", async function () {
 
     beforeEach(async function () {
 
-
         await pool.query("DELETE FROM foreign_keys")
     });
 
@@ -77,72 +76,11 @@ describe("The registrations webapp", async function () {
 
     it("should be able to use flash and return a message if the input is valid", async function () {
 
-       // await instance.storeData("CY 456 789");
+        // await instance.storeData("CY 456 789");
 
         assert.equal("registration successfully added", await instance.errorCheck('CY 456 789'));
 
     });
-
-
-
-
-
-
-
-    // DROP DATABASE [IF EXISTS] registrations-tests
-
-    // psql -d registrations-tests;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    // it("should be able take in a different language and return message", function () {
-    //     let instance = greet();
-    //     var message = instance.language("Isixhosa", "Themba");
-    //     var message2 = instance.language("English", "Themba");
-    //     var message3 = instance.language("Afrikaans", "Sipho");
-
-
-    //     assert.equal(message, "Molo, Themba" + " !");
-    //     assert.equal(message2, "Hello, Themba" + " !");
-    //     assert.equal(message3, "Hallo, Sipho" + " !");
-
-
-    // });
-
-
-
-
-
-
-
-
-
 
 
 })
