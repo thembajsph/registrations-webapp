@@ -12,7 +12,6 @@ const pool = new Pool({
 
 let instance = registrations(pool);
 
-
 describe("The registrations webapp", async function () {
 
 
@@ -20,7 +19,6 @@ describe("The registrations webapp", async function () {
 
         await pool.query("DELETE FROM foreign_keys")
     });
-
 
     it("should be able to add a new registration number", async function () {
 
@@ -32,7 +30,6 @@ describe("The registrations webapp", async function () {
 
     });
 
-
     it("should return (all) registration numbers in the database", async function () {
 
 
@@ -43,9 +40,7 @@ describe("The registrations webapp", async function () {
 
     });
 
-
     it("should not add duplicate registration numbers into the database", async function () {
-
 
         await instance.storeData("CA 222-365")
         await instance.storeData("CA 222-365")
@@ -53,7 +48,6 @@ describe("The registrations webapp", async function () {
         assert.deepEqual([{ reg_numbers: 'CA 222-365' }], await instance.allReg());
 
     });
-
 
     it("should return all registrations starting with CY", async function () {
 
@@ -64,9 +58,6 @@ describe("The registrations webapp", async function () {
 
         assert.deepEqual([{ reg_numbers: "CY 555 123" }, { reg_numbers: "CY 523 456" }], await instance.filteredTownsOptions("3"))
     });
-
-
-
 
     it("should be able to use flash and return a message if the input is not valid", async function () {
 

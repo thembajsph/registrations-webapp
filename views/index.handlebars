@@ -55,6 +55,15 @@
         <div class="infom center col-3" id="errorMsg"> {{messages.info}}
         </div>
 
+        <div class="infom1 center col-3" id="errorMsg"> {{messages.green}}
+        </div>
+
+        <div class="clearReg center col-3" id="errorMsg"> {{messages.clear}}
+        </div>
+
+        <div class="semesies center col-3" id=""> {{messages.semesies}}
+        </div>
+
 
         <form action="/registrations" method="POST">
 
@@ -91,6 +100,10 @@
     setTimeout(function () {
 
         document.querySelector(".infom").innerHTML = "";
+        document.querySelector(".infom1").innerHTML = "";
+        document.querySelector(".clearReg").innerHTML = "";
+        document.querySelector(".semesies").innerHTML = "";
+
 
     }, 3000);
 

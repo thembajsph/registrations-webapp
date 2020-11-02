@@ -1,5 +1,4 @@
 
-// const { lang } = require("moment");
 module.exports = function registrations(pool) {
 
     async function storeData(reg) {
@@ -8,26 +7,18 @@ module.exports = function registrations(pool) {
 
             let string = reg.substring(0, 2);
 
-            //   console.log({ string })
-
-
             const selectQuery = await pool.query('SELECT id FROM town_names WHERE town_code  = $1', [string])
             // now we must select the right id for our registrations
 
-            // console.log({ selectQuery });
-
             let codeId = selectQuery.rows[0].id
 
-            // console.log(codeId)
             //to check if its a database
-
             let ifExists;
 
-            // console.log(ifExists
             if (codeId > 0) {
-                //console.log(codeId);
 
                 ifExists = await pool.query('SELECT * from foreign_keys where reg_numbers = ($1)', [reg])
+
             }
 
             else {
@@ -35,8 +26,7 @@ module.exports = function registrations(pool) {
                 return false;
 
             }
-            //now if if doesnt i the database , you want to insert registrations and the id
-            //   let InsertQuery;
+            //now if if doesnt in the database , you want to insert registrations and the id
 
             if (ifExists.rows.length < 1) {
 
@@ -44,7 +34,6 @@ module.exports = function registrations(pool) {
 
             } else {
 
-                // console.log("Not inserted into database")
                 return false
             }
 
@@ -54,13 +43,12 @@ module.exports = function registrations(pool) {
         }
     };
 
-
-    // getting rowCount to use for flash error message
     async function existInDatabase(reg) {
 
         let insideDb = await pool.query('SELECT * FROM foreign_keys WHERE reg_numbers = ($1)', [reg])
+        //to check if  exist we use rowCount
         return insideDb.rowCount;
-    }
+    };
 
     // now we want to filter our database base on town
     async function filteredTownsOptions(id) {
@@ -68,8 +56,7 @@ module.exports = function registrations(pool) {
         if (id === "all") {
 
             let allRegistrations = await pool.query("SELECT reg_numbers FROM foreign_keys");
-            //console.log(allRegistrations.rows)
-            //return
+
             return allRegistrations.rows
         }
         else {
@@ -79,8 +66,6 @@ module.exports = function registrations(pool) {
             return regId.rows
         }
     };
-
-
 
     // returning all registrations in database
     async function allReg() {
@@ -95,14 +80,19 @@ module.exports = function registrations(pool) {
 
     async function errorCheck(regNumber) {
 
-        //  var userName = await req.body.userName;
-
         if (regNumber == "") {
 
             return "Insert a registration number, please!"
 
         }
-        else {
+
+    };
+
+    async function errorGreen(regNumber) {
+
+        var regex = /C[AYJ] \d{3,5}$/.test(regNumber) || /C[AYJ] \d+\s|-\d+$/.test(regNumber);
+
+        if (regNumber !== "" && regex) {
 
             return "registration successfully added"
         }
@@ -112,10 +102,31 @@ module.exports = function registrations(pool) {
     async function resetFtn() {
 
         let restart = await pool.query('DELETE FROM foreign_keys');
-        //console.log(restart).rows;
+
         return restart;
     };
 
+    async function buttonMsg() {
+
+        var buttonpressed = false;
+
+        if (!buttonpressed) {
+
+            await resetFtn();
+
+            return "database has be cleared...!"
+        }
+
+    };
+
+    async function similar(reg) {
+
+        let insideDb = await pool.query('SELECT * FROM foreign_keys WHERE reg_numbers = ($1)', [reg])
+
+        // to check if it exists you check it by === 1
+        return insideDb.rowCount == 1;
+
+    };
 
     return {
         resetFtn,
@@ -123,9 +134,18 @@ module.exports = function registrations(pool) {
         existInDatabase,
         filteredTownsOptions,
         errorCheck,
-        allReg
+        allReg,
+        errorGreen,
+        buttonMsg,
+        similar
 
     }
 
 };
 
+
+
+ //   console.log({ string })
+
+  // checks in the terminal if its there of if something is there #commented out
+            // console.log({ selectQuery });

@@ -1,6 +1,5 @@
 module.exports = function routesFactory(registrations) {
 
-
   const root = async function (req, res) {
 
     res.render("index", {
@@ -11,35 +10,47 @@ module.exports = function routesFactory(registrations) {
 
   };
 
-
   const postRegistrations = async function (req, res) {
 
     try {
 
       let regTown = req.body.regNumbers
-      // console.log(regTown);
+
       regTown = regTown.toUpperCase();
 
       //flash warning message
       let flashMsg = await registrations.errorCheck(regTown);
+      let flashGreen = await registrations.errorGreen(regTown);
 
-      // console.log(flashMsg);
 
-      req.flash("info", flashMsg);
+      let similiar = await registrations.similar(regTown)
 
-      var regex = /C[AYJ] \d{3,5}$/.test(regTown) || /C[AYJ] \d+\s|-\d+$/.test(regTown);
+      //if similiar cheeckifit exist and do nothing afterwards
+      if (similiar) {
 
-      if (regTown !== "" && regex) {
+        req.flash("semesies", 'registration number already exists... try again!')
 
-        await registrations.storeData(regTown);
-        // console.log(regTown)
+        // add the rest your code here
 
+      } else {
+
+        req.flash("info", flashMsg);
+
+        req.flash("green", flashGreen);
+
+        var regex = /C[AYJ] \d{3,5}$/.test(regTown) || /C[AYJ] \d+\s|-\d+$/.test(regTown);
+
+        if (regTown !== "" && regex) {
+
+          await registrations.storeData(regTown);
+
+        }
       }
 
       res.render("index", {
 
         reg: await registrations.allReg(),
-        wrong: flashMsg,
+        // dont needto have keys for flash twice , do it once up there eg. ----->  wrong: flashMsg,
 
       })
 
@@ -52,7 +63,6 @@ module.exports = function routesFactory(registrations) {
     }
 
   };
-
 
   const getRegistrations = async function (req, res) {
 
@@ -95,10 +105,14 @@ module.exports = function routesFactory(registrations) {
 
   };
 
-
   const clearDatabase = async function (req, res) {
 
     try {
+      let regTown = req.body.regNumbers
+
+      let clearDb = await registrations.buttonMsg(regTown)
+
+      req.flash("clear", clearDb);
 
       await registrations.resetFtn()
 
@@ -119,7 +133,6 @@ module.exports = function routesFactory(registrations) {
     getRegistrations,
     filteredTowns,
     clearDatabase
-
 
   };
 

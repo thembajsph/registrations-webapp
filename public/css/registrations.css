@@ -82,7 +82,37 @@ label {
     display: inline;
     color: cadetblue;
 }
-.infom{
+.infom {
+    /* display: inline; */
+    
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    width: 50%; 
+    color: red; 
+
+}
+.infom1{
+    /* display: inline; */
+    
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    width: 50%; 
+    color: green; 
+
+}
+
+.clearReg{
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    width: 50%; 
+    color: lightgreen; 
+
+}
+
+.semesies {
     /* display: inline; */
     
     display: block;
