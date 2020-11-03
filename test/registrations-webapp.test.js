@@ -69,7 +69,7 @@ describe("The registrations webapp", async function () {
 
         // await instance.storeData("CY 456 789");
 
-        assert.equal("registration successfully added", await instance.errorCheck('CY 456 789'));
+        assert.equal("registration successfully added", await instance.errorGreen('CY 456 789'));
 
     });
 
