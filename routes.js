@@ -38,8 +38,14 @@ module.exports = function routesFactory(registrations) {
 
         req.flash("green", flashGreen);
 
-        var regex = /C[AYJ] \d{3,5}$/.test(regTown) || /C[AYJ] \d+\s|-\d+$/.test(regTown);
+        var regex = /C[AYJ] \d{3,5}$/.test(regTown) || /C[AYJ] \d|-\d+$/.test(regTown);
+        // /C[AYJ] \d+\s|/;
 
+
+
+
+
+        ///(/C[ALJ] \d{3,5}$/.test(upper) || /C[ALJ] \d+\s|-\d+$/.test(upper))
         if (regTown !== "" && regex) {
 
           await registrations.storeData(regTown);
