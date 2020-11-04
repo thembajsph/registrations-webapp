@@ -128,19 +128,6 @@ module.exports = function registrations(pool) {
 
     };
 
-    // async function checkRegex() {
-        
-    //     var regex = /C[AYJ] \d{3,5}$/.test(regTown) || /C[AYJ] \d+\s|-\d+$/.test(regTown)
-
-    //     if (regex) {
-    //         return "regex matches"
-
-    //     } else {
-    //         return false
-    //     }
-
-
-    // }
 
     return {
         resetFtn,
@@ -152,7 +139,7 @@ module.exports = function registrations(pool) {
         errorGreen,
         buttonMsg,
         similar,
-        // checkRegex
+
 
     }
 

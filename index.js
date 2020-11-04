@@ -76,6 +76,8 @@ app.listen(PORT, function () {
 });
 
 
+
+
 // && /^[A-Z0-9].{1,9}$/.test(regTown)
 // console.log(regex)
  //instance.storeData(town);
